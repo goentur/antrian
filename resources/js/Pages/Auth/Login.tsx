@@ -1,19 +1,11 @@
-import Checkbox from '@/Components/Checkbox';
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
+import { Button, Form, InputGroup, Spinner } from 'react-bootstrap';
+import { FaArrowRightToBracket, FaRegEye, FaRegEyeSlash } from 'react-icons/fa6';
 
-export default function Login({
-    status,
-    canResetPassword,
-}: {
-    status?: string;
-    canResetPassword: boolean;
-}) {
+export default function Login({ status, canResetPassword }: { status?: string, canResetPassword: boolean }) {
+    const [showPassword, setShowPassword] = useState(false)
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
@@ -30,77 +22,47 @@ export default function Login({
 
     return (
         <GuestLayout>
-            <Head title="Log in" />
-
-            {status && (
-                <div className="mb-4 text-sm font-medium text-green-600">
-                    {status}
-                </div>
-            )}
-
-            <form onSubmit={submit}>
-                <div>
-                    <InputLabel htmlFor="email" value="Email" />
-
-                    <TextInput
-                        id="email"
+            <Head title="Masuk" />            
+            <form className="text-start" onSubmit={submit}>
+                <Form.Group className="mb-3" controlId="validationFormEmail">
+                    <Form.Label>Email <span className="text-danger">*</span></Form.Label>
+                    <Form.Control
                         type="email"
+                        placeholder="Masukan email"
                         name="email"
                         value={data.email}
-                        className="mt-1 block w-full"
-                        autoComplete="username"
-                        isFocused={true}
-                        onChange={(e) => setData('email', e.target.value)}
+                        onChange={(e) => setData("email", e.target.value)}
+                        isInvalid={!!errors.email}
+                        autoFocus
+                        autoComplete="off"
+                        required
                     />
-
-                    <InputError message={errors.email} className="mt-2" />
-                </div>
-
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        autoComplete="current-password"
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4 block">
-                    <label className="flex items-center">
-                        <Checkbox
-                            name="remember"
-                            checked={data.remember}
-                            onChange={(e) =>
-                                setData('remember', e.target.checked)
-                            }
+                    <Form.Control.Feedback type="invalid">
+                        {errors.email}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Form.Group className="mb-3" controlId="validationFormPassword">
+                    <Form.Label>Password <span className="text-danger">*</span></Form.Label>
+                    <InputGroup>
+                        <Form.Control
+                            type={showPassword?"text":"password"}
+                            placeholder="Masukan password"
+                            name="password"
+                            value={data.password}
+                            onChange={(e) => setData("password", e.target.value)}
+                            required
                         />
-                        <span className="ms-2 text-sm text-gray-600 dark:text-gray-400">
-                            Remember me
-                        </span>
-                    </label>
-                </div>
-
-                <div className="mt-4 flex items-center justify-end">
-                    {canResetPassword && (
-                        <Link
-                            href={route('password.request')}
-                            className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                        >
-                            Forgot your password?
-                        </Link>
-                    )}
-
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Log in
-                    </PrimaryButton>
-                </div>
+                        <div className="input-group-text" onClick={() => setShowPassword(!showPassword)}>{showPassword?<FaRegEyeSlash/>:<FaRegEye/>}</div>
+                    </InputGroup>
+                </Form.Group>
+                {canResetPassword && (
+                    <Link href={route('password.request')} className="text-decoration-none float-end text-reset">Lupa Password?</Link>
+                )}
+                <Form.Group className="mb-3" controlId="formBasicCheckbox">
+                    <Form.Check type="checkbox" name="remember" onChange={(e) => setData("remember", data.remember?false:true)} label="Ingat Saya" />
+                </Form.Group>
+                <Button type='submit' disabled={processing}>{processing?<Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>:<FaArrowRightToBracket/>} Masuk</Button>
+                {status && <div className="mb-3 f-14 text-success float-end">{status}</div>}
             </form>
         </GuestLayout>
     );

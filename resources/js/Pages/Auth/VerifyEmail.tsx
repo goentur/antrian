@@ -1,7 +1,8 @@
-import PrimaryButton from '@/Components/PrimaryButton';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { FormEventHandler } from 'react';
+import { Button, Spinner } from 'react-bootstrap';
+import { FaArrowRightFromBracket, FaRegPaperPlane } from 'react-icons/fa6';
 
 export default function VerifyEmail({ status }: { status?: string }) {
     const { post, processing } = useForm({});
@@ -14,36 +15,19 @@ export default function VerifyEmail({ status }: { status?: string }) {
 
     return (
         <GuestLayout>
-            <Head title="Email Verification" />
+            <Head title="Verifikasi email" />
+            <form className="text-start" onSubmit={submit}>
+                Terima kasih telah mendaftar! Sebelum memulai, bisakah Anda memverifikasi alamat email Anda dengan mengklik tautan yang baru saja kami kirimkan ke email Anda? Jika Anda tidak menerima email tersebut, kami dengan senang hati akan mengirimkan email lainnya kepada Anda.
 
-            <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                Thanks for signing up! Before getting started, could you verify
-                your email address by clicking on the link we just emailed to
-                you? If you didn't receive the email, we will gladly send you
-                another.
-            </div>
+                {status === 'verification-link-sent' && (
+                    <div className="mb-3 text-success">
+                        Tautan verifikasi baru telah dikirim ke alamat email yang Anda berikan saat pendaftaran.
+                    </div>
+                )}
 
-            {status === 'verification-link-sent' && (
-                <div className="mb-4 text-sm font-medium text-green-600 dark:text-green-400">
-                    A new verification link has been sent to the email address
-                    you provided during registration.
-                </div>
-            )}
-
-            <form onSubmit={submit}>
-                <div className="mt-4 flex items-center justify-between">
-                    <PrimaryButton disabled={processing}>
-                        Resend Verification Email
-                    </PrimaryButton>
-
-                    <Link
-                        href={route('logout')}
-                        method="post"
-                        as="button"
-                        className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:text-gray-400 dark:hover:text-gray-100 dark:focus:ring-offset-gray-800"
-                    >
-                        Log Out
-                    </Link>
+                <div className="mt-3">
+                    <Button type='submit' disabled={processing} className='float-start'>{processing?<Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>:<FaRegPaperPlane/>} Kirim Ulang Email verifikasi</Button>
+                    <Link href={route('logout')} method="post" className="btn btn-danger float-end"><FaArrowRightFromBracket/> Keluar</Link>
                 </div>
             </form>
         </GuestLayout>

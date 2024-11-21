@@ -1,12 +1,11 @@
-import InputError from '@/Components/InputError';
-import InputLabel from '@/Components/InputLabel';
-import PrimaryButton from '@/Components/PrimaryButton';
-import TextInput from '@/Components/TextInput';
 import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, useForm } from '@inertiajs/react';
-import { FormEventHandler } from 'react';
+import { FormEventHandler, useState } from 'react';
+import { Button, Form, InputGroup, Spinner } from 'react-bootstrap';
+import { FaArrowRightFromBracket, FaRegEye, FaRegEyeSlash } from 'react-icons/fa6';
 
 export default function ConfirmPassword() {
+    const [showPassword, setShowPassword] = useState(false)
     const { data, setData, post, processing, errors, reset } = useForm({
         password: '',
     });
@@ -21,35 +20,29 @@ export default function ConfirmPassword() {
 
     return (
         <GuestLayout>
-            <Head title="Confirm Password" />
-
-            <div className="mb-4 text-sm text-gray-600 dark:text-gray-400">
-                This is a secure area of the application. Please confirm your
-                password before continuing.
-            </div>
-
-            <form onSubmit={submit}>
-                <div className="mt-4">
-                    <InputLabel htmlFor="password" value="Password" />
-
-                    <TextInput
-                        id="password"
-                        type="password"
-                        name="password"
-                        value={data.password}
-                        className="mt-1 block w-full"
-                        isFocused={true}
-                        onChange={(e) => setData('password', e.target.value)}
-                    />
-
-                    <InputError message={errors.password} className="mt-2" />
-                </div>
-
-                <div className="mt-4 flex items-center justify-end">
-                    <PrimaryButton className="ms-4" disabled={processing}>
-                        Confirm
-                    </PrimaryButton>
-                </div>
+            <Head title="Konfirmasi Password" />
+            <form  onSubmit={submit}>
+                Ini adalah area aplikasi yang aman. Harap konfirmasi kata sandi Anda sebelum melanjutkan.
+                <Form.Group className="mb-3" controlId="validationFormPassword">
+                    <Form.Label>Password <span className="text-danger">*</span></Form.Label>
+                    <InputGroup>
+                        <Form.Control
+                            type={showPassword?"text":"password"}
+                            placeholder="Masukan password"
+                            name="password"
+                            value={data.password}
+                            onChange={(e) => setData("password", e.target.value)}
+                            isInvalid={!!errors.password}
+                            autoComplete="off"
+                            required
+                        />
+                        <div className="input-group-text" onClick={() => setShowPassword(!showPassword)}>{showPassword?<FaRegEyeSlash/>:<FaRegEye/>}</div>
+                    </InputGroup>
+                    <Form.Control.Feedback type="invalid">
+                        {errors.password}
+                    </Form.Control.Feedback>
+                </Form.Group>
+                <Button type='submit' disabled={processing}>{processing?<Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true"/>:<FaArrowRightFromBracket/>} Masuk</Button>
             </form>
         </GuestLayout>
     );
