@@ -37,7 +37,7 @@ export default function Authenticated({ children }: PropsWithChildren<{ header?:
                     </Navbar.Collapse>
                 </Container>
             </Navbar>
-            <Container fluid>
+            <Container>
                 {children}
             </Container>
         </div>
