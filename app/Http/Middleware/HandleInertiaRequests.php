@@ -37,12 +37,16 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         $user = $request->user();
-        $auth = Memo::forHour('handle-inertia-' . $user?->id, function () use ($user) {
-            return [
-                'user' => $user,
-                'permissions' => $user?->getPermissionsViaRoles()->pluck('name'),
-            ];
-        });
+
+        $auth = [
+            'user' => $user,
+            'permissions' => $user
+                ? Memo::forHour('handle-inertia-permissions-' . $user->id, function () use ($user) {
+                    return $user->getAllPermissions()->pluck('name')->values()->all();
+                })
+                : [],
+        ];
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),

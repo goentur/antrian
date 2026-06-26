@@ -5,16 +5,21 @@ import {
     SidebarMenuButton,
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
+import { useCurrentUrl } from '@/hooks/use-current-url';
 import type { NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
 
-export function NavMain({ title ,items = [], permissions }: { title: string, items: NavItem[], permissions: string[] }) {
-    function hasPermission(item: NavItem, permissions: string[]): boolean {
-        if (item.permission) {
-            return permissions.includes(item.permission);
-        }
-        return false;
+export function NavMain({ title, permissions, items = [] }: { title: string, permissions: string[], items: NavItem[] }) {
+    const { isCurrentUrl } = useCurrentUrl();
+    function hasPermission(item: NavItem, userPermissions: string[]): boolean {
+        if (!item?.permission) return true;
+
+        // Gunakan Array.isArray untuk memastikan aplikasi tidak crash jika tipenya bukan array
+        if (!Array.isArray(userPermissions)) return false; 
+
+        return userPermissions.includes(item.permission);
     }
+    
     return (
         <>
             {items.filter((item) => hasPermission(item, permissions)).length > 0 && (
@@ -27,6 +32,7 @@ export function NavMain({ title ,items = [], permissions }: { title: string, ite
                                     <SidebarMenuItem key={item.title}>
                                         <SidebarMenuButton
                                             asChild
+                                            isActive={isCurrentUrl(item.href)}
                                             tooltip={{ children: item.title }}
                                         >
                                             <Link href={item.href} prefetch>

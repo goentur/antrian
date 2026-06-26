@@ -1,6 +1,6 @@
 import { Form } from '@inertiajs/react';
 import { REGEXP_ONLY_DIGITS } from 'input-otp';
-import { Check, Copy, ScanLine } from 'lucide-react';
+import { Check, Copy, ScanLine, SendIcon, Undo2 } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import AlertError from '@/components/alert-error';
 import InputError from '@/components/input-error';
@@ -104,7 +104,7 @@ function TwoFactorSetupStep({
                     <div className="relative flex w-full items-center justify-center">
                         <div className="absolute inset-0 top-1/2 h-px w-full bg-border" />
                         <span className="relative bg-card px-2 py-1">
-                            or, enter the code manually
+                            atau, masukkan kode secara manual
                         </span>
                     </div>
 
@@ -210,7 +210,7 @@ function TwoFactorVerificationStep({
                                 onClick={onBack}
                                 disabled={processing}
                             >
-                                Back
+                                {processing ? <Spinner /> : <Undo2/>} Kembali
                             </Button>
                             <Button
                                 type="submit"
@@ -219,7 +219,7 @@ function TwoFactorVerificationStep({
                                     processing || code.length < OTP_MAX_LENGTH
                                 }
                             >
-                                Confirm
+                                {processing ? <Spinner /> : <SendIcon/>} Konfirmasi
                             </Button>
                         </div>
                     </div>
@@ -262,27 +262,24 @@ export default function TwoFactorSetupModal({
     }>(() => {
         if (twoFactorEnabled) {
             return {
-                title: 'Two-factor authentication enabled',
-                description:
-                    'Two-factor authentication is now enabled. Scan the QR code or enter the setup key in your authenticator app.',
-                buttonText: 'Close',
+                title: 'Two-factor authentication diaktifkan',
+                description: 'Two-factor authentication kini telah diaktifkan. Pindai kode QR atau masukkan kunci pengaturan di aplikasi autentikator Anda.',
+                buttonText: 'Tutup',
             };
         }
 
         if (showVerificationStep) {
             return {
-                title: 'Verify authentication code',
-                description:
-                    'Enter the 6-digit code from your authenticator app',
-                buttonText: 'Continue',
+                title: 'Verifikasi kode autentikasi',
+                description: 'Masukkan kode 6 digit dari aplikasi autentikator Anda',
+                buttonText: 'Selanjutnya',
             };
         }
 
         return {
-            title: 'Enable two-factor authentication',
-            description:
-                'To finish enabling two-factor authentication, scan the QR code or enter the setup key in your authenticator app',
-            buttonText: 'Continue',
+            title: 'Aktifkan two-factor authentication',
+            description: 'Untuk menyelesaikan pengaktifan two-factor authentication, pindai kode QR atau masukkan kunci penyiapan di aplikasi autentikator Anda.',
+            buttonText: 'Selanjutnya',
         };
     }, [twoFactorEnabled, showVerificationStep]);
 

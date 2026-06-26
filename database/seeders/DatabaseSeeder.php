@@ -22,26 +22,31 @@ class DatabaseSeeder extends Seeder
         // 2. DAFTAR PERMISSION (Dibuat array agar kode rapi dan mudah dirawat)
         $permissions = [
             'dashboard',
-            // role
-            'role-index',
-            'role-create',
-            'role-update',
-            'role-delete',
             // permission
             'permission-index',
             'permission-create',
             'permission-update',
             'permission-delete',
-            // loket
-            'loket-index',
-            'loket-create',
-            'loket-update',
-            'loket-delete',
+            // role
+            'role-index',
+            'role-create',
+            'role-update',
+            'role-delete',
+            // user
+            'user-index',
+            'user-create',
+            'user-update',
+            'user-delete',
             // pelayanan
             'pelayanan-index',
             'pelayanan-create',
             'pelayanan-update',
             'pelayanan-delete',
+            // loket
+            'loket-index',
+            'loket-create',
+            'loket-update',
+            'loket-delete',
             // fitur aplikasi antrian
             'pemanggilan',
             'laporan'

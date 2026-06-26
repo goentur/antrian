@@ -11,10 +11,14 @@ import {
     SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { dashboard } from '@/routes';
+import loket from '@/routes/loket';
+import pelayanan from '@/routes/pelayanan';
 import permission from '@/routes/permission';
+import role from '@/routes/role';
+import user from '@/routes/user';
 import type { NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { FileText, Headset, LayoutGrid, MonitorCog, ShieldCheck, UserCheck2, WifiIcon } from 'lucide-react';
+import { FileText, Headset, LayoutGrid, MonitorCog, ShieldCheck, UserCheck2, UserCheckIcon, WifiIcon } from 'lucide-react';
 
 const NavStatistik: NavItem[] = [
     {
@@ -33,19 +37,25 @@ const NavMaster: NavItem[] = [
     },
     {
         title: 'Role',
-        href: dashboard(),
+        href: role.index(),
         icon: UserCheck2,
         permission: 'role-index',
     },
     {
+        title: 'User',
+        href: user.index(),
+        icon: UserCheckIcon,
+        permission: 'user-index',
+    },
+    {
         title: 'Pelayanan',
-        href: dashboard(),
+        href: pelayanan.index(),
         icon: WifiIcon,
         permission: 'pelayanan-index',
     },
     {
         title: 'Loket',
-        href: dashboard(),
+        href: loket.index(),
         icon: MonitorCog,
         permission: 'loket-index',
     },
@@ -68,7 +78,7 @@ const NavLaporan: NavItem[] = [
 ];
 
 export function AppSidebar() {
-    const { permissions }: any = usePage().props.auth
+    const { permissions }:any = usePage().props.auth
     return (
         <Sidebar collapsible="icon" variant="inset">
             <SidebarHeader>
@@ -84,10 +94,10 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain permissions={permissions} title="Statistik" items={NavStatistik} />
-                <NavMain permissions={permissions} title="Master" items={NavMaster} />
-                <NavMain permissions={permissions} title="Pelayanan" items={NavPelayanan} />
-                <NavMain permissions={permissions} title="Laporan" items={NavLaporan} />
+                <NavMain title="Statistik" permissions={permissions} items={NavStatistik} />
+                <NavMain title="Master" permissions={permissions} items={NavMaster} />
+                <NavMain title="Pelayanan" permissions={permissions} items={NavPelayanan} />
+                <NavMain title="Laporan" permissions={permissions} items={NavLaporan} />
             </SidebarContent>
 
             <SidebarFooter>

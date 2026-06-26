@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('pelayanans', function (Blueprint $table) {
             $table->id();
-            $table->string('nama');
-            $table->string('prefix');
+            $table->string('nama')->nullable();
+            $table->string('prefix')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

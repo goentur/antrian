@@ -1,4 +1,3 @@
-import { Form, Head } from '@inertiajs/react';
 import {
     index as confirmOptions,
     store as confirmStore,
@@ -10,20 +9,22 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Spinner } from '@/components/ui/spinner';
 import { store } from '@/routes/password/confirm';
+import { Form, Head } from '@inertiajs/react';
+import { SendIcon } from 'lucide-react';
 
 export default function ConfirmPassword() {
     return (
         <>
-            <Head title="Confirm password" />
+            <Head title="Konfirmasi password" />
 
             <PasskeyVerify
                 routes={{
                     options: confirmOptions(),
                     submit: confirmStore(),
                 }}
-                label="Confirm with passkey"
-                loadingLabel="Confirming..."
-                separator="Or confirm with password"
+                label="Konfirmasi dengan passkey"
+                loadingLabel="Mengonfirmasi..."
+                separator="Atau konfirmasi dengan password"
             />
 
             <Form {...store.form()} resetOnSuccess={['password']}>
@@ -48,8 +49,8 @@ export default function ConfirmPassword() {
                                 disabled={processing}
                                 data-test="confirm-password-button"
                             >
-                                {processing && <Spinner />}
-                                Confirm password
+                                {processing ? <Spinner /> : <SendIcon/>}
+                                Konfirmasi password
                             </Button>
                         </div>
                     </div>
@@ -60,7 +61,6 @@ export default function ConfirmPassword() {
 }
 
 ConfirmPassword.layout = {
-    title: 'Confirm password',
-    description:
-        'This is a secure area of the application. Please confirm your password before continuing.',
+    title: 'Konfirmasi password',
+    description: 'Ini adalah area aplikasi yang aman. Harap konfirmasi kata sandi Anda sebelum melanjutkan.',
 };

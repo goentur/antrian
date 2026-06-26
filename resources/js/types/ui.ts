@@ -13,6 +13,12 @@ export type FlashToast = {
     message: string;
 };
 
+export type FlashGooey = {
+    type: 'default' |'success' | 'info' | 'warning' | 'error';
+    title: string;
+    description: string;
+};
+
 export type AuthLayoutProps = {
     children?: ReactNode;
     name?: string;

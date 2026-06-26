@@ -1,8 +1,13 @@
-import { Head } from '@inertiajs/react';
 import { PlaceholderPattern } from '@/components/ui/placeholder-pattern';
 import { dashboard } from '@/routes';
+import { appAlert } from '@/utils/AppAlert';
+import { Head } from '@inertiajs/react';
+import { useEffect } from 'react';
 
 export default function Dashboard() {
+    useEffect(() => {
+        appAlert.success('Selamat', 'Your changes have been saved and synced successfully.')
+    })
     return (
         <>
             <Head title="Dashboard" />

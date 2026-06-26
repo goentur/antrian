@@ -2,63 +2,92 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Common\DataRequest;
+use App\Http\Requests\Permission\StoreRequest;
+use App\Http\Requests\Permission\UpdateRequest;
+use App\Repositories\PermissionRepository;
+use App\Support\Facades\Memo;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
+use Inertia\Inertia;
+use Spatie\Permission\Models\Permission;
 
-class PermissionController extends Controller
+class PermissionController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected PermissionRepository $repository;
+
+    public function __construct(PermissionRepository $repository)
+    {
+        $this->repository = $repository;
+    }
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:permission-index', only: ['index', 'data']),
+            new Middleware('can:permission-create', only: ['store']),
+            new Middleware('can:permission-update', only: ['update']),
+            new Middleware('can:permission-delete', only: ['destroy']),
+        ];
+    }
+    private function gate(): array
+    {
+        $user = auth()->user();
+        return Memo::forHour('permission-gate-' . $user->getKey(), function () use ($user) {
+            return [
+                'create' => $user->can('permission-create'),
+                'update' => $user->can('permission-update'),
+                'delete' => $user->can('permission-delete'),
+            ];
+        });
+    }
+
     public function index()
     {
-        return 'disini';
+        $gate = $this->gate();
+        return inertia('permission/index', compact("gate"));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        return 'disini';
+        abort(404);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function store(StoreRequest $request)
     {
-        return 'disini';
+        $this->repository->store($request);
+        back()->with('success', 'Data berhasil ditambahkan');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
-        return 'disini';
+        abort(404);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        return 'disini';
+        abort(404);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function update(UpdateRequest $request, Permission $permission)
     {
-        return 'disini';
+        $this->repository->update($permission->uuid, $request);
+        back()->with('success', 'Data berhasil diubah');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+    public function destroy(Permission $permission)
     {
-        return 'disini';
+        $this->repository->delete($permission->uuid);
+        back()->with('success', 'Data berhasil dihapus');
+    }
+
+    public function data(DataRequest $request)
+    {
+        return response()->json($this->repository->data($request));
+    }
+
+    public function list()
+    {
+        return response()->json($this->repository->list(), 200);
     }
 }

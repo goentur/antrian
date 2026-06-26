@@ -60,8 +60,7 @@ export default function TwoFactorRecoveryCodes({
                     2FA recovery codes
                 </CardTitle>
                 <CardDescription>
-                    Recovery codes let you regain access if you lose your 2FA
-                    device. Store them in a secure password manager.
+                    Kode pemulihan memungkinkan Anda mendapatkan kembali akses jika Anda kehilangan perangkat 2FA Anda. Simpan kode-kode tersebut di pengelola kata sandi yang aman.
                 </CardDescription>
             </CardHeader>
             <CardContent>
@@ -76,7 +75,7 @@ export default function TwoFactorRecoveryCodes({
                             className="size-4"
                             aria-hidden="true"
                         />
-                        {codesAreVisible ? 'Hide' : 'View'} recovery codes
+                        {codesAreVisible ? 'Sembunyikan' : 'Tampilkan'} recovery codes
                     </Button>
 
                     {canRegenerateCodes && (
@@ -145,13 +144,13 @@ export default function TwoFactorRecoveryCodes({
 
                                 <div className="text-xs text-muted-foreground select-none">
                                     <p id="regenerate-warning">
-                                        Each recovery code can be used once to
-                                        access your account and will be removed
-                                        after use. If you need more, click{' '}
+                                        Setiap kode pemulihan dapat digunakan satu kali untuk
+                                        mengakses akun Anda dan akan dihapus
+                                        setelah digunakan. Jika Anda memerlukan lebih banyak, klik{' '}
                                         <span className="font-bold">
                                             Regenerate codes
                                         </span>{' '}
-                                        above.
+                                        diatas.
                                     </p>
                                 </div>
                             </>
