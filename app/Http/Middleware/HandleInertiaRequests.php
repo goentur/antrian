@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Support\Facades\Memo;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -35,12 +36,17 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $user = $request->user();
+        $auth = Memo::forHour('handle-inertia-' . $user?->id, function () use ($user) {
+            return [
+                'user' => $user,
+                'permissions' => $user?->getPermissionsViaRoles()->pluck('name'),
+            ];
+        });
         return [
             ...parent::share($request),
             'name' => config('app.name'),
-            'auth' => [
-                'user' => $request->user(),
-            ],
+            'auth' => $auth,
             'sidebarOpen' => ! $request->hasCookie('sidebar_state') || $request->cookie('sidebar_state') === 'true',
         ];
     }
