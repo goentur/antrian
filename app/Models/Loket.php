@@ -20,4 +20,9 @@ use Illuminate\Support\Carbon;
 class Loket extends Model
 {
     use SoftDeletes;
+
+    public function pelayanans()
+    {
+        return $this->belongsToMany(Pelayanan::class, 'pelayanan_loket');
+    }
 }

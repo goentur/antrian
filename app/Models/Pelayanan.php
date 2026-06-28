@@ -16,8 +16,13 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $deleted_at
  */
 
-#[Fillable(['nama', 'user_id'])]
+#[Fillable(['nama', 'keterangan', 'prefix', 'icon'])]
 class Pelayanan extends Model
 {
     use SoftDeletes;
+
+    public function lokets()
+    {
+        return $this->belongsToMany(Loket::class, 'pelayanan_loket');
+    }
 }

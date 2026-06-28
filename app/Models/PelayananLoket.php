@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class LayananLoket extends Model
+class PelayananLoket extends Model
 {
     //
 }

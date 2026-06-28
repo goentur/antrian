@@ -9,7 +9,6 @@ use Illuminate\Support\Carbon;
 /**
  * @property int $id
  * @property string|null $nama
- * @property int|null $nomor
  * @property int|null $layanan_id
  * @property int|null $loket_id
  * @property int|null $user_id
@@ -18,5 +17,5 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $updated_at
  */
 
-#[Fillable(['nama', 'nomor', 'layanan_id', 'loket_id', 'user_id', 'status'])]
+#[Fillable(['nama', 'pelayanan_id', 'loket_id', 'user_id', 'status'])]
 class Antrian extends Model {}
