@@ -1,42 +1,23 @@
+import { panggilAntrian } from '@/utils/PanggilSuara';
 import { useEffect, useState } from 'react';
 
 export default function MonitorNomorAntrian() {
     const [currentAntrian, setCurrentAntrian] = useState<string>('-');
     const [currentLoket, setCurrentLoket] = useState<string>('-');
 
-    // Fungsi pemutar suara teks ke suara (Text-to-Speech) bawaan browser
-    const putarSuaraPanggilan = (nomor: string, loket: string) => {
-        if ('speechSynthesis' in window) {
-            // Ubah format nomor agar dieja dengan baik (misal A-005 menjadi "A kosong kosong lima")
-            const nomorEjaan = nomor.replace('-', ' ').split('').join(' ');
-            const teks = `Nomor antrean, ${nomorEjaan}, menuju, loket, ${loket}`;
-            
-            const utterance = new SpeechSynthesisUtterance(teks);
-            utterance.lang = 'id-ID'; // Menggunakan bahasa Indonesia
-            utterance.rate = 0.85;    // Sedikit diperlambat agar jelas
-            
-            window.speechSynthesis.speak(utterance);
-        } else {
-            console.warn("Browser ini tidak mendukung Text-to-Speech.");
-        }
-    };
-
     useEffect(() => {
-        console.log('run')
         if (window.Echo) {
-            console.log("Mulai mendengarkan jalur-antrian...");
-
-            window.Echo.channel('jalur-antrian')
-                .listen('PanggilAntrian', (e: any) => {
-                    console.log("Menerima data broadcast: ", e);
-                    
-                    // 1. Update State UI Monitor
-                    setCurrentAntrian(e.nomorAntrian);
-                    setCurrentLoket(e.nomorLoket);
-                    
-                    // 2. Jalankan Audio Panggilan
-                    putarSuaraPanggilan(e.nomorAntrian, e.nomorLoket);
+            window.Echo.channel('jalur-antrian').listen('PanggilAntrian', (e: any) => {
+                setCurrentAntrian(e.nomorAntrian);
+                setCurrentLoket(e.nomorLoket);
+                panggilAntrian(`Nomor antrian ${e.nomorAntrian}, silahkan menuju loket ${e.nomorLoket}`, {
+                    dingdong: "/start.mp3",
+                    notifikasiAkhir: "/end.mp3",
+                    gender: "female",
+                    rate: 1,
+                    pitch: 1
                 });
+            });
         }
 
         return () => {

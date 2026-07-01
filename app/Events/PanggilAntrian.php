@@ -12,19 +12,16 @@ class PanggilAntrian implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    // Properti harus PUBLIC agar bisa terbaca di React Frontend
-    public $nomorAntrian;
-    public $nomorLoket;
-
-    public function __construct($nomorAntrian, $nomorLoket)
-    {
+    public function __construct(
+        public string $nomorAntrian,
+        public int $nomorLoket
+    ) {
         $this->nomorAntrian = $nomorAntrian;
         $this->nomorLoket = $nomorLoket;
     }
 
     public function broadcastOn(): array
     {
-        // Pastikan nama channel di sini sama persis dengan yang di React
         return [
             new Channel('jalur-antrian'),
         ];
