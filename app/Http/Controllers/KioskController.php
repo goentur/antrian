@@ -32,7 +32,7 @@ class KioskController extends Controller
         $antrian = Antrian::create([
             'pelayanan_id' => $pelayanan->id,
             'nama' => $nomorAntrianLengkap,
-            'status' => AntrianStatus::MENUGGU,
+            'status' => AntrianStatus::MENUNGGU,
         ]);
 
         return response()->json([
@@ -45,5 +45,10 @@ class KioskController extends Controller
                 'tanggal' => $antrian->created_at->format('d-m-Y'),
             ]
         ], 201);
+    }
+
+    function monitorNomorAntrian()
+    {
+        return Inertia::render('kiosk/monitor-nomor-antrian');
     }
 }

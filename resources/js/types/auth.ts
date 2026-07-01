@@ -33,3 +33,9 @@ export type TwoFactorSetupData = {
 export type TwoFactorSecretKey = {
     secretKey: string;
 };
+
+export type Gate = {
+    create: boolean
+    update: boolean
+    delete: boolean
+}

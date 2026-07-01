@@ -13,6 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import loket from '@/routes/loket';
 import pelayanan from '@/routes/pelayanan';
+import pemanggilan from '@/routes/pemanggilan';
 import permission from '@/routes/permission';
 import role from '@/routes/role';
 import user from '@/routes/user';
@@ -63,7 +64,7 @@ const NavMaster: NavItem[] = [
 const NavPelayanan: NavItem[] = [
     {
         title: 'Pemanggilan',
-        href: dashboard(),
+        href: pemanggilan.index(),
         icon: Headset,
         permission: 'pemanggilan',
     },

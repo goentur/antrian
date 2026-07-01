@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\AntrianStatus;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -18,4 +19,14 @@ use Illuminate\Support\Carbon;
  */
 
 #[Fillable(['nama', 'pelayanan_id', 'loket_id', 'user_id', 'status'])]
-class Antrian extends Model {}
+class Antrian extends Model
+{
+     protected $casts = [
+          'status' => AntrianStatus::class,
+     ];
+
+     public function pelayanan()
+     {
+          return $this->belongsTo(Pelayanan::class);
+     }
+}
