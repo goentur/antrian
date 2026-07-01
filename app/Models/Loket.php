@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Carbon;
 
@@ -21,8 +22,8 @@ class Loket extends Model
 {
     use SoftDeletes;
 
-    public function pelayanans()
+    public function pelayanan(): BelongsToMany
     {
-        return $this->belongsToMany(Pelayanan::class, 'pelayanan_loket');
+        return $this->belongsToMany(Pelayanan::class, PelayananLoket::class);
     }
 }

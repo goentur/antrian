@@ -13,7 +13,7 @@ use Spatie\Permission\Middleware\RoleOrPermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        channels: __DIR__.'/../routes/channels.php',
+        channels: __DIR__ . '/../routes/channels.php',
         web: __DIR__ . '/../routes/web.php',
         commands: __DIR__ . '/../routes/console.php',
         health: '/up',
@@ -36,4 +36,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->shouldRenderJsonWhen(
             fn(Request $request) => $request->is('api/*'),
         );
-    })->create();
+    })->withBroadcasting( // <-- PASTIKAN BARIS INI ADA
+        __DIR__ . '/../routes/channels.php',
+        ['middleware' => ['web', 'auth']], // Memastikan user harus login via web session
+    )->create();

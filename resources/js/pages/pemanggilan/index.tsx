@@ -31,6 +31,20 @@ export default function Index() {
         getData()
     }, [infoDataTabel.page, infoDataTabel.search, infoDataTabel.perPage])
 
+
+    useEffect(() => {
+        if (window.Echo) {
+            window.Echo.private('antrian-update-channel').listen('AntrianUpdated', (e: any) => {
+                getData()
+            });
+        }
+        return () => {
+            if (window.Echo) {
+                window.Echo.leaveChannel('antrian-update-channel');
+            }
+        };
+    }, []);
+
     const getData = async () => {
         setLoading(true)
         try {
@@ -64,21 +78,16 @@ export default function Index() {
 
     // 3. Handler Panggil Antrean Selanjutnya
     const handlePanggil = async () => {
-        setLoading(true);
         try {
             const url = pemanggilan.panggilBerikutnya().url;
             const response = await axios.post(url);
             
             if (response.data.success) {
-                appAlert.success('Sukses', `Memanggil antrean ${response.data.nomorAntrian}`);
-                // PENTING: Ambil data terbaru setelah backend sukses memproses data
-                getData();
+                appAlert.success('Sukses', `Memanggil antrean ${response.data.nomor}`);
             }
         } catch (error: any) {
             const msg = error.response?.data?.message || error.message;
             appAlert.error('Error', msg);
-        } finally {
-            setLoading(false);
         }
     };
 

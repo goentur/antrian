@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Enums\AntrianStatus;
+use App\Events\AntrianUpdated;
 use App\Events\PanggilAntrian;
 use App\Http\Requests\Common\DataRequest;
 use App\Models\Antrian;
 use App\Repositories\PemanggilanRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Inertia\Inertia;
 
 class PemanggilanController extends Controller
@@ -29,17 +32,57 @@ class PemanggilanController extends Controller
 
     public function panggilBerikutnya(Request $request)
     {
-        $nomorAntrian = "A-005";
-        $nomorLoket = 1;
+        DB::beginTransaction();
+        try {
+            $user = Auth::user();
+            $loket = $user->loket()->first();
 
-        // Hapus ->toOthers() agar TV Monitor PASTI menerima event ini
-        broadcast(new PanggilAntrian($nomorAntrian, $nomorLoket));
+            if (!$loket) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Anda tidak terikat dengan loket manapun.'
+                ], 400);
+            }
 
-        // Gunakan HTTP status 200 (OK) agar Axios membaca JSON dengan mulus
-        return response()->json([
-            'success' => true,
-            'nomorAntrian' => $nomorAntrian,
-            'nomorLoket' => $nomorLoket
-        ], 200);
+            $pelayananIds = $loket->pelayanan->pluck('id')->toArray();
+            $antrian = Antrian::whereDate('created_at', today())
+                ->whereIn('pelayanan_id', $pelayananIds)
+                ->where('status', AntrianStatus::MENUNGGU)
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->first();
+            if (!$antrian) {
+                DB::rollBack();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Antrean sudah habis!'
+                ], 404);
+            }
+            $antrian->update([
+                'status' => AntrianStatus::DILAYANI,
+                'loket_id' => $loket->id,
+                'user_id' => $user->id
+            ]);
+            $nomorAntrian = $antrian->nama;
+            $nomorLoket = $loket->nama;
+
+            DB::commit();
+
+            broadcast(new AntrianUpdated($antrian))->toOthers();
+            broadcast(new PanggilAntrian($nomorAntrian, $nomorLoket))->toOthers();
+
+            return response()->json([
+                'success' => true,
+                'nomor' => $nomorAntrian,
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan pada server.',
+                'error' => config('app.debug') ? $e->getMessage() : null // Tampilkan detail error hanya di mode debug
+            ], 500);
+        }
     }
 }
