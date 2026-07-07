@@ -22,7 +22,10 @@ class PemanggilanController extends Controller
 
     function index()
     {
-        return Inertia::render('pemanggilan/index');
+        $user = Auth::user();
+        $loket = $user->loket()->first();
+        $pelayananIds = $loket->pelayanan->pluck('id')->toArray();
+        return Inertia::render('pemanggilan/index', compact('pelayananIds'));
     }
 
     function data(DataRequest $request)
@@ -43,10 +46,8 @@ class PemanggilanController extends Controller
                     'message' => 'Anda tidak terikat dengan loket manapun.'
                 ], 400);
             }
-
-            $pelayananIds = $loket->pelayanan->pluck('id')->toArray();
             $antrian = Antrian::whereDate('created_at', today())
-                ->whereIn('pelayanan_id', $pelayananIds)
+                ->whereIn('pelayanan_id', $request->pelayanan)
                 ->where('status', AntrianStatus::MENUNGGU)
                 ->orderBy('id')
                 ->lockForUpdate()

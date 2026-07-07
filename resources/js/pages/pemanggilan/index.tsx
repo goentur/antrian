@@ -10,7 +10,7 @@ import { CheckCircle, RefreshCw, Volume2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import DataTable from './components/data-table';
 
-export default function Index() {
+export default function Index({pelayananIds}:any) {
     const title = 'Pemanggilan'
     const [loading, setLoading] = useState(false)
     const [dataTable, setDataTable] = useState<[]>([])
@@ -35,6 +35,7 @@ export default function Index() {
     useEffect(() => {
         if (window.Echo) {
             window.Echo.private('antrian-update-channel').listen('AntrianUpdated', (e: any) => {
+
                 getData()
             });
         }
@@ -54,6 +55,7 @@ export default function Index() {
                     page: infoDataTabel.page,
                     search: infoDataTabel.search,
                     perPage: infoDataTabel.perPage,
+                    pelayanan:pelayananIds
                 }
             )
             setDataTable(response.data.data)
@@ -80,7 +82,7 @@ export default function Index() {
     const handlePanggil = async () => {
         try {
             const url = pemanggilan.panggilBerikutnya().url;
-            const response = await axios.post(url);
+            const response = await axios.post(url,{'pelayanan' : pelayananIds});
             
             if (response.data.success) {
                 appAlert.success('Sukses', `Memanggil antrean ${response.data.nomor}`);
